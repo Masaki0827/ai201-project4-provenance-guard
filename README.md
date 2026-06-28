@@ -154,9 +154,15 @@ One implementation choice diverged from the original draft: the draft assumed a 
 
 ## AI usage
 
-1. For Milestone 3, I supplied the architecture and semantic-signal specification to an AI coding tool and requested the Flask factory, `/submit` route, and Groq analyzer. I revised its output to validate JSON bodies, generate UUID content IDs, parse bounded scores, fall back safely when Groq is unavailable, and commit each submission with its audit event.
-2. For Milestone 4, I asked the AI tool for pure-Python Type-Token Ratio and sentence-variance scoring plus the documented 65/35 combination. I checked the generated formula against the spec, separated the combined AI score from label confidence, and added endpoint tests that force human, uncertain, and AI outcomes.
-3. For Milestone 5, I provided the three exact labels and appeal workflow and requested label mapping and `/appeal`. I corrected the field names to `content_id` and `creator_reasoning`, standardized `under_review`, limited only `/submit`, and expanded appeal logs to retain the original decision, excerpt, and both scores.
+I used Codex as an implementation assistant, but treated `planning.md` as the source of truth and reviewed generated code against the written thresholds and API contract.
+
+| Instance | What I directed the AI to do | What the AI produced | What I reviewed, revised, or overrode |
+| --- | --- | --- | --- |
+| Milestone 3: API and semantic signal | I supplied the architecture diagram and semantic-signal specification and requested a Flask application factory, a `POST /submit` route, and a Groq-based analyzer returning a 0–1 score. | It produced the initial Flask route structure, Groq request code, score parsing, and SQLite persistence skeleton. | I added strict JSON validation, UUID content IDs, bounded score handling, deterministic fallback behavior, and an atomic submission-plus-audit-log transaction. I also fixed the valid Groq score `0.5` so it is not mistaken for an API failure. |
+| Milestone 4: stylometrics and scoring | I supplied the detection-signal and uncertainty sections and requested pure-Python Type-Token Ratio, sentence-length variance, and the documented 65/35 weighted combination. | It produced the token/sentence parser, stylometric calculations, and combined-score mapping. | I checked the formula against `planning.md`, kept the high `0.75` AI threshold to reduce false positives, separated `combined_ai_score` from label confidence, and added boundary and endpoint tests proving all three outcomes are reachable. |
+| Milestone 5: production layer | I supplied the exact label strings, appeal workflow, and architecture diagram and requested label mapping, `POST /appeal`, Flask-Limiter configuration, and structured logging. | It produced the initial three-way label function, appeal route, limiter decorator, and audit-event structure. | I corrected the contract to `content_id` plus `creator_reasoning`, standardized the status as `under_review`, restricted rate limiting to `/submit`, and expanded appeal events to preserve the original attribution, confidence, both signal scores, and content excerpt. I then verified ten `200` responses followed by two `429` responses. |
+
+The AI accelerated scaffolding and test generation; the threshold policy, false-positive tradeoff, final API contract, validation rules, and revisions above remained explicit project decisions rather than unreviewed generated output.
 
 ## What would change for production
 
