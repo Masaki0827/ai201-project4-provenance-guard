@@ -196,4 +196,4 @@ The suite verifies exact threshold text, all three labels through `/submit`, the
 
 ## Portfolio walkthrough
 
-A concise recording script and click-by-click demo sequence are provided in [docs/walkthrough-script.md](docs/walkthrough-script.md). It covers architecture, two contrasting submissions, all label behavior, an appeal, `GET /log`, and rate limiting in approximately two to three minutes.
+[Watch the Provenance Guard portfolio walkthrough on Google Drive](https://drive.google.com/file/d/1OHQoBh54KMD5jNSoiCLacQY1kxJJPz3j/view?usp=sharing).
